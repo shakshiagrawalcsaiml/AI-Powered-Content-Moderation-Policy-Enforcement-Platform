@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, redirect, render_template, request
 from transformers import pipeline
 import sqlite3
 app = Flask(__name__)
@@ -57,13 +57,21 @@ def submit():
         else:
             label = "non-toxic"
             score = non_toxic_score
-
     else:
-        # Fallback (single output case)
         label = result[0]['label']
         score = result[0]['score']
 
     action, severity = policy_engine(label, score)
+
+    # SAVE TO DATABASE
+    conn = sqlite3.connect("database.db")
+    cursor = conn.cursor()
+    cursor.execute("""
+        INSERT INTO posts (content, label, confidence, severity, action)
+        VALUES (?, ?, ?, ?, ?)
+    """, (content, label, score, severity, action))
+    conn.commit()
+    conn.close()
 
     return f"""
     <h3>Moderation Result</h3>
@@ -73,6 +81,32 @@ def submit():
     Severity Score: {severity} <br>
     Final Action: {action}
     """
+
+
+@app.route("/update/<int:post_id>/<decision>")
+def update(post_id, decision):
+    conn = sqlite3.connect("database.db")
+    cursor = conn.cursor()
+
+    cursor.execute("UPDATE posts SET action = ? WHERE id = ?", (decision, post_id))
+
+    conn.commit()
+    conn.close()
+
+    return redirect("/dashboard")
+
+
+@app.route("/dashboard")
+def dashboard():
+    conn = sqlite3.connect("database.db")
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT * FROM posts")
+    posts = cursor.fetchall()
+
+    conn.close()
+
+    return render_template("dashboard.html", posts=posts)
 
 if __name__ == "__main__":
      init_db()
