@@ -1,6 +1,7 @@
 from flask import Flask, redirect, render_template, request
 from transformers import pipeline
 import sqlite3
+
 app = Flask(__name__)
 
 # Load AI model once
@@ -9,13 +10,17 @@ classifier = pipeline(
     return_all_scores=True
 )
 
+# Policy decision engine
 def policy_engine(label, score):
-    if label.lower() == "toxic" and score > 0.85:
+    if label == "toxic" and score > 0.85:
         return "AUTO_REMOVE", 9
-    elif label.lower() == "toxic" and score > 0.60:
+    elif label == "toxic" and score > 0.60:
         return "SEND_TO_MODERATOR", 6
     else:
         return "ALLOW", 2
+
+
+# Initialize database
 def init_db():
     conn = sqlite3.connect("database.db")
     cursor = conn.cursor()
@@ -32,63 +37,67 @@ def init_db():
     """)
 
     conn.commit()
-    conn.close()    
+    conn.close()
+
 
 @app.route("/")
 def home():
     return render_template("submit.html")
 
+
 @app.route("/submit", methods=["POST"])
 def submit():
     content = request.form['content']
 
+    # Run AI model
     result = classifier(content)
 
-    # If return_all_scores=True
-    if isinstance(result[0], list):
-        scores = result[0]
-        
-        toxic_score = next((x['score'] for x in scores if x['label'] == 'toxic'), 0)
-        non_toxic_score = next((x['score'] for x in scores if x['label'] != 'toxic'), 0)
-
-        if toxic_score > non_toxic_score:
-            label = "toxic"
-            score = toxic_score
-        else:
-            label = "non-toxic"
-            score = non_toxic_score
+    # result[0] is a dict like {'label': 'toxic', 'score': 0.95}
+    prediction = result[0]
+    
+    model_label = prediction.get('label', 'safe')
+    score = prediction.get('score', 0)
+    
+    # Only consider it toxic if score is above threshold
+    if model_label == 'toxic' and score >= 0.5:
+        label = 'toxic'
     else:
-        label = result[0]['label']
-        score = result[0]['score']
+        label = 'safe'
 
+    # policy decision
     action, severity = policy_engine(label, score)
 
-    # SAVE TO DATABASE
+    # save to database
     conn = sqlite3.connect("database.db")
     cursor = conn.cursor()
+
     cursor.execute("""
         INSERT INTO posts (content, label, confidence, severity, action)
         VALUES (?, ?, ?, ?, ?)
     """, (content, label, score, severity, action))
+
     conn.commit()
     conn.close()
 
     return f"""
     <h3>Moderation Result</h3>
+
     Content: {content} <br><br>
+
     Predicted Label: {label} <br>
     Confidence: {score:.2f} <br>
     Severity Score: {severity} <br>
-    Final Action: {action}
+    Final Action: {action} <br><br>
+
+    <a href="/">Submit another content</a><br>
+    <a href="/dashboard">Go to Moderator Dashboard</a>
     """
-
-
 @app.route("/update/<int:post_id>/<decision>")
 def update(post_id, decision):
     conn = sqlite3.connect("database.db")
     cursor = conn.cursor()
 
-    cursor.execute("UPDATE posts SET action = ? WHERE id = ?", (decision, post_id))
+    cursor.execute("DELETE FROM posts WHERE id = ?", (post_id,))
 
     conn.commit()
     conn.close()
@@ -104,10 +113,14 @@ def dashboard():
     cursor.execute("SELECT * FROM posts")
     posts = cursor.fetchall()
 
+    cursor.execute("SELECT COUNT(*) FROM posts")
+    total_posts = cursor.fetchone()[0]
+
     conn.close()
 
-    return render_template("dashboard.html", posts=posts)
+    return render_template("dashboard.html", posts=posts, total_posts=total_posts)
+
 
 if __name__ == "__main__":
-     init_db()
-     app.run(debug=True)
+    init_db()
+    app.run(debug=True)
