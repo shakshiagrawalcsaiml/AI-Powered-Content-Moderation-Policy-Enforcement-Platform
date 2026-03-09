@@ -48,3 +48,10 @@ python app.py
 5. Open the browser and go to
 
 http://127.0.0.1:5000
+## Screenshots
+
+### Content Submission Page
+![Submission Page](submit_image%20(1).png)
+
+### Moderator Dashboard
+![Moderator Dashboard](dashboard_image.png.png)
