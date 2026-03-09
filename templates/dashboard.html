@@ -3,9 +3,7 @@
 <head>
     <title>Moderator Dashboard</title>
 </head>
-
 <body>
-
 <h2>Moderator Dashboard</h2>
 <h3>Total Moderated Posts: {{ total_posts }}</h3>
 
@@ -25,12 +23,12 @@
         <td>{{ post[0] }}</td>
         <td>{{ post[1] }}</td>
         <td>
-{% if post[2] == "toxic" %}
-<span style="color:red;font-weight:bold;">Toxic</span>
-{% else %}
-<span style="color:green;font-weight:bold;">Safe</span>
-{% endif %}
-</td>
+        {% if post[2] == "toxic" %}
+        <span style="color:red;font-weight:bold;">Toxic</span>
+        {% else %}
+        <span style="color:green;font-weight:bold;">Safe</span>
+        {% endif %}
+        </td>
         <td>{{ post[3] }}</td>
         <td>{{ post[4] }}</td>
         <td>{{ post[5] }}</td>
