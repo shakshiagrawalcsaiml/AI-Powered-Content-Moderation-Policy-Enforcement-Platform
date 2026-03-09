@@ -55,3 +55,12 @@ http://127.0.0.1:5000
 
 ### Moderator Dashboard
 ![Moderator Dashboard](dashboard_image.png.png)
+## Testing
+
+The moderation system was tested using different types of user inputs such as safe messages and toxic language to verify that the AI model correctly classifies content and assigns moderation actions.
+
+Example test inputs:
+- hello
+- good morning
+- I hate you
+- i will kill you
