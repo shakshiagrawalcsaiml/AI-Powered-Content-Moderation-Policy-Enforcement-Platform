@@ -4,10 +4,10 @@ import sqlite3
 
 app = Flask(__name__)
 
-# Load AI model once
+# Load AI moderation model
 classifier = pipeline(
-    model="unitary/toxic-bert",
-    return_all_scores=True
+    "text-classification",
+    model="unitary/toxic-bert"
 )
 
 # Policy decision engine
@@ -40,34 +40,38 @@ def init_db():
     conn.close()
 
 
+# Home page
 @app.route("/")
 def home():
     return render_template("submit.html")
 
 
+# Submit content for moderation
 @app.route("/submit", methods=["POST"])
 def submit():
-    content = request.form['content']
+
+    content = request.form.get("content")
+
+    # Basic validation
+    if not content or content.strip() == "":
+        return "Content cannot be empty"
 
     # Run AI model
-    result = classifier(content)
+    result = classifier(content)[0]
 
-    # result[0] is a dict like {'label': 'toxic', 'score': 0.95}
-    prediction = result[0]
-    
-    model_label = prediction.get('label', 'safe')
-    score = prediction.get('score', 0)
-    
-    # Only consider it toxic if score is above threshold
-    if model_label == 'toxic' and score >= 0.5:
-        label = 'toxic'
+    model_label = result["label"]
+    score = result["score"]
+
+    # Convert model label to our system label
+    if model_label.lower() == "toxic" and score >= 0.5:
+        label = "toxic"
     else:
-        label = 'safe'
+        label = "safe"
 
-    # policy decision
+    # Apply moderation policy
     action, severity = policy_engine(label, score)
 
-    # save to database
+    # Save result to database
     conn = sqlite3.connect("database.db")
     cursor = conn.cursor()
 
@@ -79,21 +83,20 @@ def submit():
     conn.commit()
     conn.close()
 
-    return f"""
-    <h3>Moderation Result</h3>
+    return render_template(
+        "result.html",
+        content=content,
+        label=label,
+        score=score,
+        severity=severity,
+        action=action
+    )
 
-    Content: {content} <br><br>
 
-    Predicted Label: {label} <br>
-    Confidence: {score:.2f} <br>
-    Severity Score: {severity} <br>
-    Final Action: {action} <br><br>
-
-    <a href="/">Submit another content</a><br>
-    <a href="/dashboard">Go to Moderator Dashboard</a>
-    """
+# Moderator action
 @app.route("/update/<int:post_id>/<decision>")
 def update(post_id, decision):
+
     conn = sqlite3.connect("database.db")
     cursor = conn.cursor()
 
@@ -105,8 +108,10 @@ def update(post_id, decision):
     return redirect("/dashboard")
 
 
+# Moderator dashboard
 @app.route("/dashboard")
 def dashboard():
+
     conn = sqlite3.connect("database.db")
     cursor = conn.cursor()
 
@@ -118,7 +123,11 @@ def dashboard():
 
     conn.close()
 
-    return render_template("dashboard.html", posts=posts, total_posts=total_posts)
+    return render_template(
+        "dashboard.html",
+        posts=posts,
+        total_posts=total_posts
+    )
 
 
 if __name__ == "__main__":
