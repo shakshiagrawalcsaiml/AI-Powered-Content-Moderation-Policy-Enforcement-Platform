@@ -1,17 +1,84 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>AI Moderation System</title>
+<title>AI Content Moderation System</title>
+
+<style>
+
+body{
+    font-family: Arial, sans-serif;
+    background-color:#f4f6f8;
+    text-align:center;
+}
+
+.container{
+    width:500px;
+    margin:100px auto;
+    background:white;
+    padding:30px;
+    border-radius:10px;
+    box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+textarea{
+    width:100%;
+    padding:10px;
+    border-radius:5px;
+    border:1px solid #ccc;
+    resize:none;
+}
+
+button{
+    background:#3498db;
+    color:white;
+    padding:10px 20px;
+    border:none;
+    border-radius:5px;
+    cursor:pointer;
+    font-size:16px;
+}
+
+button:hover{
+    background:#2980b9;
+}
+
+.dashboard-link{
+    display:inline-block;
+    margin-top:15px;
+    text-decoration:none;
+    color:white;
+    background:#2c3e50;
+    padding:8px 15px;
+    border-radius:5px;
+}
+
+</style>
+
 </head>
+
 <body>
-    <h2>Submit Your Content</h2>
-    <form method="POST" action="/submit">
-        <textarea name="content" rows="6" cols="50" placeholder="Type something here..."></textarea>
-        <br><br>
-        <button type="submit">Analyze</button>
-    </form>
-    <br><br>
+
+<div class="container">
+
+<h2>AI Content Moderation System</h2>
+
+<p>Enter text to check whether it contains toxic or harmful content.</p>
+
+<form method="POST" action="/submit">
+
+<textarea name="content" rows="6" placeholder="Type something like 'hello' or 'I hate you'..."></textarea>
+
 <br><br>
-<a href="/dashboard">Go to Moderator Dashboard</a>
+
+<button type="submit">Analyze Content</button>
+
+</form>
+
+<br>
+
+<a class="dashboard-link" href="/dashboard">Go to Moderator Dashboard</a>
+
+</div>
+
 </body>
 </html>
