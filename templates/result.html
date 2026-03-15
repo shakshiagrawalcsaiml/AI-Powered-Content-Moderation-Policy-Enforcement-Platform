@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Moderation Result</title>
+</head>
+<body>
+
+<h2>Moderation Result</h2>
+
+<p><b>Content:</b> {{ content }}</p>
+<p><b>Label:</b> {{ label }}</p>
+<p><b>Confidence:</b> {{ "%.2f"|format(score) }}</p>
+<p><b>Severity Score:</b> {{ severity }}</p>
+<p><b>Final Action:</b> {{ action }}</p>
+
+<br><br>
+
+<a href="/">Submit another content</a>
+<br>
+<a href="/dashboard">Go to Moderator Dashboard</a>
+
+</body>
+</html>
