@@ -13,7 +13,10 @@ print("Full result:", result)
 print("\nType of result:", type(result))
 print("\nFirst element:", result[0])
 print("\nType of first element:", type(result[0]))
-s
+print("\nSecond element:", result[1])
+print("\nType of second element:", type(result[1]))
+
+
 # Try to extract scores
 scores = result[0]
 for item in scores:

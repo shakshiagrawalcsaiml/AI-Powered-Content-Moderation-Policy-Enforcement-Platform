@@ -1,9 +1,10 @@
-from flask import Flask, redirect, render_template, request
+from flask import Flask, redirect, render_template, request, session
 from transformers import pipeline
 import sqlite3
 import logging
 
 app = Flask(__name__)
+app.secret_key = "secret123"
 
 # ---------------- LOGGING ----------------
 logging.basicConfig(
@@ -59,12 +60,36 @@ def home():
     return render_template("submit.html")
 
 
+# ---------------- LOGIN ----------------
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        username = request.form['username']
+        password = request.form['password']
+
+        if username == "admin" and password == "admin":
+            session['user'] = username
+            return redirect("/dashboard")
+        else:
+            return "Invalid credentials"
+
+    return render_template("login.html")
+
+
+# ---------------- LOGOUT ----------------
+@app.route("/logout")
+def logout():
+    session.pop('user', None)
+    return redirect("/login")
+
+
+# ---------------- SUBMIT ----------------
 @app.route("/submit", methods=["POST"])
 def submit():
 
     content = request.form.get("content")
 
-    # ---------------- INPUT VALIDATION ----------------
+    # Validation
     if not content or content.strip() == "":
         return "Content cannot be empty"
 
@@ -74,25 +99,24 @@ def submit():
     if len(content) > 500:
         return "Content too long"
 
-    # ---------------- MODEL PREDICTION ----------------
+    # AI prediction
     result = classifier(content)[0]
 
     model_label = result.get("label", "safe")
     score = result.get("score", 0)
 
-    # Convert label
     if model_label.lower() == "toxic" and score >= 0.5:
         label = "toxic"
     else:
         label = "safe"
 
-    # ---------------- POLICY ----------------
+    # Policy decision
     action, severity = policy_engine(label, score)
 
-    # ---------------- LOGGING ----------------
+    # Logging
     logging.info(f"Content: {content} | Label: {label} | Score: {score:.2f} | Action: {action}")
 
-    # ---------------- DATABASE SAVE ----------------
+    # Save to DB
     conn = get_db_connection()
     cursor = conn.cursor()
 
@@ -114,13 +138,16 @@ def submit():
     )
 
 
+# ---------------- UPDATE (PROTECTED) ----------------
 @app.route("/update/<int:post_id>/<decision>")
 def update(post_id, decision):
+
+    if 'user' not in session:
+        return redirect("/login")
 
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # Log moderator action
     logging.info(f"Moderator action on post {post_id}: {decision}")
 
     cursor.execute("DELETE FROM posts WHERE id = ?", (post_id,))
@@ -131,8 +158,12 @@ def update(post_id, decision):
     return redirect("/dashboard")
 
 
+# ---------------- DASHBOARD (PROTECTED) ----------------
 @app.route("/dashboard")
 def dashboard():
+
+    if 'user' not in session:
+        return redirect("/login")
 
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -143,7 +174,6 @@ def dashboard():
     cursor.execute("SELECT COUNT(*) FROM posts")
     total_posts = cursor.fetchone()[0]
 
-    # ---------------- NEW FEATURE ----------------
     cursor.execute("SELECT COUNT(*) FROM posts WHERE label='toxic'")
     toxic_count = cursor.fetchone()[0]
 
