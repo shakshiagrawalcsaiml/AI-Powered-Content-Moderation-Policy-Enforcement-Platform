@@ -1,0 +1,41 @@
+2026-03-21 23:53:42,157 - INFO - HTTP Request: HEAD https://huggingface.co/unitary/toxic-bert/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-03-21 23:53:42,222 - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/unitary/toxic-bert/4d6c22e74ba2fdd26bc4f7238f50766b045a0d94/config.json "HTTP/1.1 200 OK"
+2026-03-21 23:53:42,771 - INFO - HTTP Request: GET https://huggingface.co/api/models/unitary/toxic-bert/tree/main/additional_chat_templates?recursive=false&expand=false "HTTP/1.1 404 Not Found"
+2026-03-21 23:53:43,079 - INFO - HTTP Request: GET https://huggingface.co/api/models/unitary/toxic-bert/tree/main?recursive=true&expand=false "HTTP/1.1 200 OK"
+2026-03-21 23:53:43,136 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2026-03-21 23:53:43,137 - INFO - [33mPress CTRL+C to quit[0m
+2026-03-21 23:53:43,139 - INFO -  * Restarting with stat
+2026-03-21 23:53:47,995 - INFO - HTTP Request: HEAD https://huggingface.co/unitary/toxic-bert/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-03-21 23:53:48,098 - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/unitary/toxic-bert/4d6c22e74ba2fdd26bc4f7238f50766b045a0d94/config.json "HTTP/1.1 200 OK"
+2026-03-21 23:53:48,505 - INFO - HTTP Request: GET https://huggingface.co/api/models/unitary/toxic-bert/tree/main/additional_chat_templates?recursive=false&expand=false "HTTP/1.1 404 Not Found"
+2026-03-21 23:53:48,816 - INFO - HTTP Request: GET https://huggingface.co/api/models/unitary/toxic-bert/tree/main?recursive=true&expand=false "HTTP/1.1 200 OK"
+2026-03-21 23:53:48,836 - WARNING -  * Debugger is active!
+2026-03-21 23:53:48,838 - INFO -  * Debugger PIN: 531-794-984
+2026-03-21 23:56:21,224 - INFO - 127.0.0.1 - - [21/Mar/2026 23:56:21] "GET / HTTP/1.1" 200 -
+2026-03-21 23:56:21,257 - INFO - 127.0.0.1 - - [21/Mar/2026 23:56:21] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-03-21 23:56:51,549 - INFO - Content: hello
+ | Label: safe | Score: 0.00 | Action: ALLOW
+2026-03-21 23:56:51,549 - INFO - Content: hello
+ | Label: safe | Score: 0.00 | Action: ALLOW
+2026-03-21 23:56:51,550 - INFO - Content: hello
+ | Label: safe | Score: 0.00 | Action: ALLOW
+2026-03-21 23:56:51,573 - INFO - 127.0.0.1 - - [21/Mar/2026 23:56:51] "POST /submit HTTP/1.1" 200 -
+2026-03-21 23:56:51,575 - INFO - 127.0.0.1 - - [21/Mar/2026 23:56:51] "POST /submit HTTP/1.1" 200 -
+2026-03-21 23:56:51,588 - INFO - 127.0.0.1 - - [21/Mar/2026 23:56:51] "POST /submit HTTP/1.1" 200 -
+2026-03-21 23:56:54,703 - INFO - 127.0.0.1 - - [21/Mar/2026 23:56:54] "GET / HTTP/1.1" 200 -
+2026-03-22 00:00:50,399 - INFO - HTTP Request: HEAD https://huggingface.co/unitary/toxic-bert/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-03-22 00:00:50,502 - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/unitary/toxic-bert/4d6c22e74ba2fdd26bc4f7238f50766b045a0d94/config.json "HTTP/1.1 200 OK"
+2026-03-22 00:00:51,013 - INFO - HTTP Request: GET https://huggingface.co/api/models/unitary/toxic-bert/tree/main/additional_chat_templates?recursive=false&expand=false "HTTP/1.1 404 Not Found"
+2026-03-22 00:00:51,273 - INFO - HTTP Request: GET https://huggingface.co/api/models/unitary/toxic-bert/tree/main?recursive=true&expand=false "HTTP/1.1 200 OK"
+2026-03-22 00:00:51,342 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2026-03-22 00:00:51,342 - INFO - [33mPress CTRL+C to quit[0m
+2026-03-22 00:00:51,343 - INFO -  * Restarting with stat
+2026-03-22 00:00:55,191 - INFO - HTTP Request: HEAD https://huggingface.co/unitary/toxic-bert/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-03-22 00:00:55,234 - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/unitary/toxic-bert/4d6c22e74ba2fdd26bc4f7238f50766b045a0d94/config.json "HTTP/1.1 200 OK"
+2026-03-22 00:00:55,623 - INFO - HTTP Request: GET https://huggingface.co/api/models/unitary/toxic-bert/tree/main/additional_chat_templates?recursive=false&expand=false "HTTP/1.1 404 Not Found"
+2026-03-22 00:00:55,937 - INFO - HTTP Request: GET https://huggingface.co/api/models/unitary/toxic-bert/tree/main?recursive=true&expand=false "HTTP/1.1 200 OK"
+2026-03-22 00:00:55,965 - WARNING -  * Debugger is active!
+2026-03-22 00:00:55,967 - INFO -  * Debugger PIN: 531-794-984
+2026-03-22 00:01:12,592 - INFO - 127.0.0.1 - - [22/Mar/2026 00:01:12] "GET / HTTP/1.1" 200 -

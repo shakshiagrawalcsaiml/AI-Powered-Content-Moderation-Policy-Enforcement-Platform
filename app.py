@@ -1,10 +1,10 @@
-from flask import Flask, redirect, render_template, request, session
+from flask import Flask, redirect, render_template, request, session, flash
 from transformers import pipeline
 import sqlite3
 import logging
 
 app = Flask(__name__)
-app.secret_key = "secret123"
+app.secret_key = "super_secret_key"   # change in production
 
 # ---------------- LOGGING ----------------
 logging.basicConfig(
@@ -13,11 +13,13 @@ logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s"
 )
 
-# ---------------- MODEL ----------------
-classifier = pipeline(
-    "text-classification",
-    model="unitary/toxic-bert"
-)
+# ---------------- MODEL (LOAD ONCE) ----------------
+try:
+    classifier = pipeline("text-classification", model="unitary/toxic-bert")
+except Exception as e:
+    logging.error(f"Model loading failed: {e}")
+    classifier = None
+
 
 # ---------------- POLICY ENGINE ----------------
 def policy_engine(label, score):
@@ -31,7 +33,9 @@ def policy_engine(label, score):
 
 # ---------------- DATABASE ----------------
 def get_db_connection():
-    return sqlite3.connect("database.db")
+    conn = sqlite3.connect("database.db")
+    conn.row_factory = sqlite3.Row   # better access
+    return conn
 
 
 def init_db():
@@ -64,14 +68,16 @@ def home():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        username = request.form['username']
-        password = request.form['password']
+        username = request.form.get("username")
+        password = request.form.get("password")
 
         if username == "admin" and password == "admin":
             session['user'] = username
+            logging.info("Admin logged in")
             return redirect("/dashboard")
         else:
-            return "Invalid credentials"
+            flash("Invalid credentials")
+            return redirect("/login")
 
     return render_template("login.html")
 
@@ -80,6 +86,7 @@ def login():
 @app.route("/logout")
 def logout():
     session.pop('user', None)
+    logging.info("User logged out")
     return redirect("/login")
 
 
@@ -89,34 +96,44 @@ def submit():
 
     content = request.form.get("content")
 
-    # Validation
+    # ---------------- VALIDATION ----------------
     if not content or content.strip() == "":
-        return "Content cannot be empty"
+        flash("Content cannot be empty")
+        return redirect("/")
 
     if len(content) < 3:
-        return "Content too short"
+        flash("Content too short")
+        return redirect("/")
 
     if len(content) > 500:
-        return "Content too long"
+        flash("Content too long")
+        return redirect("/")
 
-    # AI prediction
-    result = classifier(content)[0]
+    if classifier is None:
+        return "Model not loaded properly"
 
-    model_label = result.get("label", "safe")
-    score = result.get("score", 0)
+    # ---------------- AI PREDICTION ----------------
+    try:
+        result = classifier(content)[0]
+        model_label = result.get("label", "safe")
+        score = result.get("score", 0)
+    except Exception as e:
+        logging.error(f"Prediction error: {e}")
+        return "Error processing content"
 
+    # Normalize label
     if model_label.lower() == "toxic" and score >= 0.5:
         label = "toxic"
     else:
         label = "safe"
 
-    # Policy decision
+    # ---------------- POLICY ----------------
     action, severity = policy_engine(label, score)
 
-    # Logging
+    # ---------------- LOGGING ----------------
     logging.info(f"Content: {content} | Label: {label} | Score: {score:.2f} | Action: {action}")
 
-    # Save to DB
+    # ---------------- DATABASE SAVE ----------------
     conn = get_db_connection()
     cursor = conn.cursor()
 
@@ -168,17 +185,10 @@ def dashboard():
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    cursor.execute("SELECT * FROM posts")
-    posts = cursor.fetchall()
-
-    cursor.execute("SELECT COUNT(*) FROM posts")
-    total_posts = cursor.fetchone()[0]
-
-    cursor.execute("SELECT COUNT(*) FROM posts WHERE label='toxic'")
-    toxic_count = cursor.fetchone()[0]
-
-    cursor.execute("SELECT COUNT(*) FROM posts WHERE label='safe'")
-    safe_count = cursor.fetchone()[0]
+    posts = cursor.execute("SELECT * FROM posts").fetchall()
+    total_posts = cursor.execute("SELECT COUNT(*) FROM posts").fetchone()[0]
+    toxic_count = cursor.execute("SELECT COUNT(*) FROM posts WHERE label='toxic'").fetchone()[0]
+    safe_count = cursor.execute("SELECT COUNT(*) FROM posts WHERE label='safe'").fetchone()[0]
 
     conn.close()
 
