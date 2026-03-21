@@ -33,15 +33,32 @@ h2{
 .toxic{
     color:white;
     background:red;
-    padding:4px 8px;
+    padding:5px 10px;
     border-radius:5px;
 }
 
 .safe{
     color:white;
     background:green;
-    padding:4px 8px;
+    padding:5px 10px;
     border-radius:5px;
+}
+
+/* NEW: action color */
+.action{
+    font-weight:bold;
+}
+
+.auto{
+    color:red;
+}
+
+.review{
+    color:orange;
+}
+
+.allow{
+    color:green;
 }
 
 .button{
@@ -87,7 +104,16 @@ h2{
 
 <p><b>Severity Score:</b> {{ severity }}</p>
 
-<p><b>Final Action:</b> {{ action }}</p>
+<p><b>Final Action:</b> 
+<span class="action
+{% if action == 'AUTO_REMOVE' %} auto
+{% elif action == 'SEND_TO_MODERATOR' %} review
+{% else %} allow
+{% endif %}
+">
+{{ action }}
+</span>
+</p>
 
 </div>
 
