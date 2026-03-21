@@ -8,20 +8,25 @@
 body{
     font-family: Arial, sans-serif;
     background:#f4f6f8;
+    margin:0;
+}
+
+/* HEADER */
+.header{
+    background:#2c3e50;
+    color:white;
+    padding:15px;
     text-align:center;
 }
 
+/* CONTAINER */
 .container{
     width:500px;
-    margin:100px auto;
+    margin:40px auto;
     background:white;
     padding:30px;
     border-radius:10px;
     box-shadow:0px 0px 10px rgba(0,0,0,0.1);
-}
-
-h2{
-    margin-bottom:20px;
 }
 
 .result{
@@ -30,6 +35,15 @@ h2{
     line-height:1.8;
 }
 
+/* CONTENT BOX */
+.content-box{
+    background:#f9f9f9;
+    padding:10px;
+    border-radius:5px;
+    margin-bottom:10px;
+}
+
+/* LABEL */
 .toxic{
     color:white;
     background:red;
@@ -44,23 +58,19 @@ h2{
     border-radius:5px;
 }
 
-/* NEW: action color */
-.action{
+/* ACTION BADGE */
+.badge{
+    padding:5px 10px;
+    border-radius:5px;
+    color:white;
     font-weight:bold;
 }
 
-.auto{
-    color:red;
-}
+.auto{ background:red; }
+.review{ background:orange; }
+.allow{ background:green; }
 
-.review{
-    color:orange;
-}
-
-.allow{
-    color:green;
-}
-
+/* BUTTONS */
 .button{
     display:inline-block;
     margin-top:20px;
@@ -84,13 +94,19 @@ h2{
 
 <body>
 
-<div class="container">
+<!-- HEADER -->
+<div class="header">
+    <h2>Moderation Result</h2>
+</div>
 
-<h2>Moderation Result</h2>
+<div class="container">
 
 <div class="result">
 
-<p><b>Content:</b> {{ content }}</p>
+<p><b>Content:</b></p>
+<div class="content-box">
+    {{ content }}
+</div>
 
 <p><b>Label:</b> 
 {% if label == "toxic" %}
@@ -105,7 +121,7 @@ h2{
 <p><b>Severity Score:</b> {{ severity }}</p>
 
 <p><b>Final Action:</b> 
-<span class="action
+<span class="badge
 {% if action == 'AUTO_REMOVE' %} auto
 {% elif action == 'SEND_TO_MODERATOR' %} review
 {% else %} allow
@@ -119,7 +135,7 @@ h2{
 
 <a class="button" href="/">Submit Another Content</a>
 <br><br>
-<a class="button dashboard" href="/dashboard">Moderator Dashboard</a>
+<a class="button dashboard" href="/dashboard">Go to Dashboard</a>
 
 </div>
 
