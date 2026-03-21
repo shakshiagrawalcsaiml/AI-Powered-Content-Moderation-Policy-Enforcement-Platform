@@ -1,17 +1,86 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Login</title>
+<title>Login - AI Moderation System</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to right, #3498db, #2c3e50);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    margin:0;
+}
+
+.container{
+    background:white;
+    padding:40px;
+    border-radius:10px;
+    width:300px;
+    box-shadow:0px 0px 15px rgba(0,0,0,0.2);
+    text-align:center;
+}
+
+h2{
+    margin-bottom:20px;
+}
+
+input{
+    width:100%;
+    padding:10px;
+    margin:10px 0;
+    border-radius:5px;
+    border:1px solid #ccc;
+}
+
+button{
+    width:100%;
+    padding:10px;
+    background:#3498db;
+    color:white;
+    border:none;
+    border-radius:5px;
+    font-size:16px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#2980b9;
+}
+
+.error{
+    color:red;
+    font-size:14px;
+}
+</style>
+
 </head>
+
 <body>
+
+<div class="container">
 
 <h2>Moderator Login</h2>
 
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <div class="error">
+      {% for msg in messages %}
+        <p>{{ msg }}</p>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
 <form method="POST">
-    <input type="text" name="username" placeholder="Username"><br><br>
-    <input type="password" name="password" placeholder="Password"><br><br>
+    <input type="text" name="username" placeholder="Enter Username" required>
+    <input type="password" name="password" placeholder="Enter Password" required>
     <button type="submit">Login</button>
 </form>
+
+</div>
 
 </body>
 </html>
