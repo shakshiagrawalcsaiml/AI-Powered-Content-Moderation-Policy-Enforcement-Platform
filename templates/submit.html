@@ -52,7 +52,36 @@ button:hover{
     border-radius:5px;
 }
 
+/* NEW: error message */
+.error{
+    color:red;
+    margin-top:10px;
+}
+
 </style>
+
+<script>
+function validateForm() {
+    let content = document.forms["myForm"]["content"].value;
+
+    if (content.trim() === "") {
+        alert("Content cannot be empty");
+        return false;
+    }
+
+    if (content.length < 3) {
+        alert("Content is too short");
+        return false;
+    }
+
+    if (content.length > 500) {
+        alert("Content is too long");
+        return false;
+    }
+
+    return true;
+}
+</script>
 
 </head>
 
@@ -64,9 +93,9 @@ button:hover{
 
 <p>Enter text to check whether it contains toxic or harmful content.</p>
 
-<form method="POST" action="/submit">
+<form name="myForm" method="POST" action="/submit" onsubmit="return validateForm()">
 
-<textarea name="content" rows="6" placeholder="Type something like 'hello' or 'I hate you'..."></textarea>
+<textarea name="content" rows="6" placeholder="Try: 'hello' or 'I hate you'"></textarea>
 
 <br><br>
 
