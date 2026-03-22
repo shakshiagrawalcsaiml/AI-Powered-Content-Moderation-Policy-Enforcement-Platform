@@ -1,66 +1,83 @@
-# AI-Powered Content Moderation & Policy Enforcement Platform
+# 🤖 AI-Powered Content Moderation & Policy Enforcement Platform
 
 ## Overview
-This project is an AI-powered content moderation system that detects toxic or harmful text using machine learning models.
 
-## Technologies Used
-- Python
-- Flask
-- HuggingFace Transformers
-- Toxic-BERT
-- SQLite
-- HTML
+This project is an AI-powered content moderation system that detects toxic or harmful text using machine learning models. It analyzes user input and applies moderation actions like allow, review, or remove.
 
 ## Features
-- User content submission form
-- AI toxicity detection
-- Policy decision engine
-- Database storage
-- Moderator dashboard
+
+* Admin login system
+* User content submission
+* AI toxicity detection (Toxic-BERT)
+* Moderation result with confidence score
+* Moderator dashboard with statistics
+* Logging system
+
+## Technologies Used
+
+* Python
+* Flask
+* HuggingFace Transformers
+* Toxic-BERT
+* SQLite
+* HTML, CSS
+
+## Application Pages
+
+* Login Page → Admin login required
+* Submit Page → User enters text
+* Result Page → Shows prediction, confidence, action
+* Dashboard → View all posts, approve/remove content
 
 ## Project Structure
-app.py → Flask backend logic  
-templates/ → HTML pages  
-submit.html → user submission form  
-dashboard.html → moderator dashboard  
-database.db → stores moderation results
-## Team Members
-Shakshi Agrawal  
-Bharat Gautam
-## Installation & Running the Project
 
-1. Clone the repository
+app.py → Backend logic
+templates/ → HTML pages
+database.db → Database
+screenshots/ → Project images
+
+## Installation & Run
 
 git clone https://github.com/shakshiagrawalcsaiml/AI-Powered-Content-Moderation-Policy-Enforcement-Platform.git
-
-2. Move into the project folder
-
 cd AI-Powered-Content-Moderation-Policy-Enforcement-Platform
-
-3. Install dependencies
-
 pip install -r requirements.txt
-
-4. Run the Flask application
-
 python app.py
 
-5. Open the browser and go to
+Open: http://127.0.0.1:5000/login
 
-http://127.0.0.1:5000
+## Login Credentials
+
+Username: admin
+Password: admin
+
 ## Screenshots
 
-### Content Submission Page
-![Submission Page](submit_image%20(1).png)
+Login Page
+![Login](screenshots/login.png)
 
-### Moderator Dashboard
-![Moderator Dashboard](dashboard_image.png.png)
+Submit Page
+![Submit](screenshots/submit.png)
+
+Result Page
+![Result](screenshots/result.png)
+
+Dashboard
+![Dashboard](screenshots/dashboard.png)
+
 ## Testing
 
-The moderation system was tested using different types of user inputs such as safe messages and toxic language to verify that the AI model correctly classifies content and assigns moderation actions.
+Tested with inputs like:
 
-Example test inputs:
-- hello
-- good morning
-- I hate you
-- i will kill you
+* hello
+* good morning
+* I hate you
+* I will kill you
+
+## Team Members
+
+Shakshi Agrawal
+Bharat Gautam
+
+## Conclusion
+
+This project shows how AI can be used to detect and control harmful content effectively.
