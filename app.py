@@ -73,10 +73,9 @@ def login():
 
         if username == "admin" and password == "admin":
             session['user'] = username
-            logging.info("Admin logged in")
             return redirect("/dashboard")
         else:
-            flash("Invalid credentials")
+            flash("Invalid username or password")   # ✅ feedback added
             return redirect("/login")
 
     return render_template("login.html")
