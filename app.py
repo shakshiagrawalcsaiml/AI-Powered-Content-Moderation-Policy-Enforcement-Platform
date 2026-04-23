@@ -15,7 +15,11 @@ logging.basicConfig(
 
 # ---------------- MODEL (LOAD ONCE) ----------------
 try:
-    classifier = pipeline("text-classification", model="unitary/toxic-bert")
+    classifier = pipeline(
+    "text-classification",
+    model="unitary/toxic-bert",
+    device=-1   # CPU (stable)
+)
 except Exception as e:
     logging.error(f"Model loading failed: {e}")
     classifier = None
