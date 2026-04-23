@@ -185,13 +185,20 @@ def dashboard():
     if 'user' not in session:
         return redirect("/login")
 
-    conn = get_db_connection()
+    conn = sqlite3.connect("database.db")
     cursor = conn.cursor()
 
-    posts = cursor.execute("SELECT * FROM posts").fetchall()
-    total_posts = cursor.execute("SELECT COUNT(*) FROM posts").fetchone()[0]
-    toxic_count = cursor.execute("SELECT COUNT(*) FROM posts WHERE label='toxic'").fetchone()[0]
-    safe_count = cursor.execute("SELECT COUNT(*) FROM posts WHERE label='safe'").fetchone()[0]
+    cursor.execute("SELECT * FROM posts")
+    posts = cursor.fetchall()
+
+    cursor.execute("SELECT COUNT(*) FROM posts")
+    total_posts = cursor.fetchone()[0]
+
+    cursor.execute("SELECT COUNT(*) FROM posts WHERE label='toxic'")
+    toxic_count = cursor.fetchone()[0]
+
+    cursor.execute("SELECT COUNT(*) FROM posts WHERE label='safe'")
+    safe_count = cursor.fetchone()[0]
 
     conn.close()
 
